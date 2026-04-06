@@ -9,7 +9,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
 
 from openpyxl import Workbook
 
@@ -428,7 +427,7 @@ def main():
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
     
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
     wait = WebDriverWait(driver, 20)
 
     from openpyxl import Workbook
@@ -451,7 +450,7 @@ def main():
                 chrome_options.add_argument('--disable-gpu')
                 chrome_options.add_argument('--no-sandbox')
                 chrome_options.add_argument('--disable-dev-shm-usage')
-                driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+                driver = webdriver.Chrome(options=chrome_options)
                 wait = WebDriverWait(driver, 20)
                 try:
                     process_county(driver, wait, c, wb, OUTPUT_FILE)
