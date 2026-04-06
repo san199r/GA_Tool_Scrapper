@@ -1,0 +1,48 @@
+name: Daily Georgia Probate Scraper
+
+on:
+  schedule:
+    # Runs at 2:00 AM IST (8:30 PM UTC previous day) every day
+    - cron: '30 20 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          google-chrome --version
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Scraper
+        run: python GA_State_Probate_Daterange_Tool_V3.py
+
+      - name: Send Email with Excel Output
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: psantosh1999@gmail.com
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Automated GA Probate Scraper Results
+          body: The automated daily scrapers for the Georgia probate records have successfully been completed. Please find the generated multi-county Excel report attached.
+          to: psantosh1999@gmail.com
+          from: GitHub Actions Automation
+          attachments: GA_Daterange_*.xlsx
